@@ -3,7 +3,7 @@ import uuid
 from typing import Optional
 
 import uvicorn
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, status
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -27,6 +27,19 @@ app.add_middleware(
 # Ensure output directory exists
 OUTPUT_DIR = "thread_outputs"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+@app.get("/health", status_code=status.HTTP_200_OK)
+async def health_check():
+    """
+    Simple health check endpoint to verify the application is running.
+    
+    Returns:
+        dict: A simple status message
+    """
+    return {
+        "status": "healthy",
+        "message": "Thread Image Generator is up and running!"
+    }
 
 @app.post("/generate-thread-image/")
 async def create_thread_image(

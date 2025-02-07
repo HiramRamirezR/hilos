@@ -1,0 +1,22 @@
+/* /home/hiramramirez/personalDev/hilos/static/styles.css */
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+#preview, #result {
+    max-width: 100%;
+    margin: 20px 0;
+}
+
+#loading {
+    display: none;
+    color: blue;
+}
+
+#error {
+    color: red;
+}

@@ -13,6 +13,26 @@ Hilos is a web application that generates thread-like representations of images 
    - Start Command: `uvicorn app:app --host 0.0.0.0 --port $PORT`
    - Branch: `main`
 
+## Keeping the App Awake
+
+### UptimeRobot Configuration
+To prevent the Render free tier from sleeping, use a monitoring service like UptimeRobot:
+
+1. Sign up at [UptimeRobot](https://uptimerobot.com/)
+2. Create a new Monitor
+   - Type: HTTP(s)
+   - Friendly Name: Hilos App Health Check
+   - URL: `https://your-render-url.onrender.com/health`
+   - Monitoring Interval: Every 5 minutes
+
+### Alternative Approaches
+- Use cron jobs or scheduled tasks to ping the `/health` endpoint
+- Consider upgrading to Render's paid tier for continuous deployment
+
+### Performance Considerations
+- The health check is lightweight and won't consume significant resources
+- Helps keep the application warm and reduces cold start times
+
 ## Local Development
 1. Clone the repository
 2. Install dependencies: `pip install -r requirements.txt`

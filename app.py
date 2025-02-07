@@ -6,6 +6,7 @@ import uvicorn
 from fastapi import FastAPI, File, UploadFile, HTTPException, status
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from hilos import generate_thread_image
 
@@ -24,9 +25,19 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 # Ensure output directory exists
 OUTPUT_DIR = "thread_outputs"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+@app.get("/", response_class=FileResponse)
+async def serve_index():
+    """
+    Serve the main index.html file
+    """
+    return "static/index.html"
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():

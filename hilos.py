@@ -21,14 +21,17 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
     Returns:
         tuple: (output_image_path, line_sequence_path)
     """
-    # Parameters
+    # Validate and use passed parameters
+    PIN_NO = max(10, min(pins, 1000))  # Constrain between 10 and 1000
+    LINE_NO = max(100, min(lines, 10000))  # Constrain between 100 and 10000
     PIXEL_WIDTH = pixel_width
-    PIN_NO = pins
-    LINE_NO = lines
     MIN_PREVIOUS_PINS = 20
     LINE_WIDTH = 30
     MIN_DISTANCE = 20
     SCALE = 50
+
+    # Log the actual values being used
+    print(f"Generating thread image with: pins={PIN_NO}, lines={LINE_NO}")
 
     # Determine output directory
     if output_dir is None:

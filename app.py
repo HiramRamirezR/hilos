@@ -1,6 +1,7 @@
 import os
 import uuid
 from typing import Optional
+from fastapi import Query
 
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, HTTPException, status
@@ -55,9 +56,9 @@ async def health_check():
 @app.post("/generate-thread-image/")
 async def create_thread_image(
     file: UploadFile = File(...), 
-    pins: Optional[int] = 240, 
-    lines: Optional[int] = 3500, 
-    pixel_width: Optional[int] = 500
+    pins: Optional[int] = Query(240), 
+    lines: Optional[int] = Query(3500), 
+    pixel_width: Optional[int] = Query(500)
 ):
     """
     Generate a thread-like representation of an uploaded image.
@@ -67,37 +68,61 @@ async def create_thread_image(
     - **lines**: Number of lines to draw (default: 3500)
     - **pixel_width**: Size of resulting image (default: 500)
     """
+    # Debug logging
+    print(f"Received parameters:")
+    print(f"Pins (type: {type(pins)}): {pins}")
+    print(f"Lines (type: {type(lines)}): {lines}")
+    print(f"Pixel Width (type: {type(pixel_width)}): {pixel_width}")
+
     # Validate file type
-    if not file.content_type.startswith('image/'):
-        raise HTTPException(status_code=400, detail="File must be an image")
+    allowed_types = ['image/jpeg', 'image/png']
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Unsupported file type. Only JPEG and PNG are supported. Received: {file.content_type}"
+        )
 
     # Generate unique filename
-    unique_filename = f"{uuid.uuid4()}_input.jpg"
+    unique_filename = f"{uuid.uuid4()}_input{os.path.splitext(file.filename)[1]}"
     input_path = os.path.join(OUTPUT_DIR, unique_filename)
 
-    # Save uploaded file
     try:
+        # Save uploaded file
         with open(input_path, "wb") as buffer:
             buffer.write(await file.read())
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
-    try:
+        # Ensure parameters are integers
+        pins = int(pins) if pins is not None else 240
+        lines = int(lines) if lines is not None else 3500
+        pixel_width = int(pixel_width) if pixel_width is not None else 500
+
         # Generate thread image
-        output_image, line_sequence = generate_thread_image(
+        output_image_path, line_sequence_path = generate_thread_image(
             input_path, 
-            output_dir=OUTPUT_DIR, 
+            OUTPUT_DIR, 
             pins=pins, 
             lines=lines, 
             pixel_width=pixel_width
         )
 
-        return {
-            "output_image": os.path.basename(output_image),
-            "line_sequence": os.path.basename(line_sequence)
-        }
+        # Return the generated image
+        return FileResponse(
+            output_image_path, 
+            media_type="image/jpeg", 
+            filename=os.path.basename(output_image_path)
+        )
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating thread image: {str(e)}")
+        # Log the full error for server-side debugging
+        print(f"Error processing image: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Error processing image: {str(e)}"
+        )
+    finally:
+        # Clean up input file
+        if os.path.exists(input_path):
+            os.remove(input_path)
 
 @app.get("/outputs/{filename}")
 async def get_output_file(filename: str):

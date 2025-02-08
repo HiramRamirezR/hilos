@@ -1,29 +1,83 @@
-<!-- /home/hiramramirez/personalDev/hilos/static/index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hilos - Thread Image Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Hilos - Thread Image Generator</h1>
-    
-    <form id="imageForm">
-        <input type="file" id="imageInput" accept="image/*" required>
-        <div>
-            <label>Pins: <input type="number" id="pins" value="240" min="10" max="1000"></label>
-            <label>Lines: <input type="number" id="lines" value="3500" min="100" max="10000"></label>
-            <label>Pixel Width: <input type="number" id="pixelWidth" value="500" min="100" max="2000"></label>
-        </div>
-        <button type="submit">Generate Thread Image</button>
-    </form>
+    <div class="container">
+        <header>
+            <h1>Hilos <span>Thread Image Generator</span></h1>
+        </header>
 
-    <div id="loading">Generando imagen... Por favor espera.</div>
-    <div id="error"></div>
+        <main>
+            <form>
+                <div class="image-upload-container">
+                    <input 
+                        type="file" 
+                        id="imageInput" 
+                        accept="image/*" 
+                        required 
+                        class="file-input"
+                    >
+                    <label for="imageInput" class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Selecciona una imagen</span>
+                    </label>
 
-    <img id="preview" style="display:none;">
-    <img id="result" style="display:none;">
+                    <div class="preview-container">
+                        <img id="preview" alt="Vista previa" class="preview-image">
+                    </div>
+                </div>
+
+                <div class="settings-container">
+                    <div class="setting">
+                        <label for="pins">
+                            <i class="fas fa-thumbtack"></i> Pins
+                        </label>
+                        <input 
+                            type="number" 
+                            id="pins" 
+                            value="240" 
+                            min="10" 
+                            max="1000"
+                        >
+                    </div>
+                    <div class="setting">
+                        <label for="lines">
+                            <i class="fas fa-bezier-curve"></i> Líneas
+                        </label>
+                        <input 
+                            type="number" 
+                            id="lines" 
+                            value="3500" 
+                            min="100" 
+                            max="10000"
+                        >
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="generate-btn" disabled>
+                    <i class="fas fa-magic"></i> Generar Imagen de Hilos
+                </button>
+            </form>
+
+            <div id="status" class="status-container">
+                <div id="loading" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Generando imagen...
+                </div>
+                <div id="error" class="error"></div>
+            </div>
+
+            <div class="result-container">
+                <img id="result" alt="Imagen generada" class="result-image">
+            </div>
+        </main>
+    </div>
 
     <script src="/static/script.js"></script>
 </body>

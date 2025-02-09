@@ -51,6 +51,13 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
     if img.shape[0] > pixel_width or img.shape[1] > pixel_width:
         img = cv2.resize(img, (pixel_width, pixel_width), interpolation=cv2.INTER_AREA)
 
+    # Read input image
+    img = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
+    
+    # Resize image if necessary
+    if img.shape[0] > pixel_width or img.shape[1] > pixel_width:
+        img = cv2.resize(img, (pixel_width, pixel_width), interpolation=cv2.INTER_AREA)
+
     # Crop image
     def crop(image):
         height, width = image.shape[0:2]
@@ -121,17 +128,7 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
 
     lineSequence.append(currentPin)
 
-    def progress_generator():
-        total_steps = LINE_NO
-        for step in range(total_steps + 1):
-            progress = (step / total_steps) * 100
-            print(f"Progress: {progress:.2f}%")
-            yield progress
-
-    progress = progress_generator()
-
-    for _ in tqdm(range(LINE_NO), desc="Creating lines: ", unit='Lines'):
-        next(progress)
+    for _ in tqdm(range(LINE_NO), desc="Creating lines", unit='Lines'):
         maxError = -m.inf
         bestPin = -1
         for difference in range(MIN_DISTANCE, PIN_NO-MIN_DISTANCE):

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="thread-viewer-container">
+        <div id="progress-counter" class="progress-counter">
+            Paso 0 de 0
+        </div>
+        <div class="donut-container">
+            <div class="donut">
+                <div class="quarter q1">
+                    <div class="quarter-circle q1">
+                        <span class="quarter-number q1"></span>
+                    </div>
+                </div>
+                <div class="quarter q2">
+                    <div class="quarter-circle q2">
+                        <span class="quarter-number q2"></span>
+                    </div>
+                </div>
+                <div class="quarter q3">
+                    <div class="quarter-circle q3">
+                        <span class="quarter-number q3"></span>
+                    </div>
+                </div>
+                <div class="quarter q4">
+                    <div class="quarter-circle q4">
+                        <span class="quarter-number q4"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="navigation" class="navigation">
+            <button id="prev-btn" class="nav-btn nav-btn-prev">
+                <span class="btn-icon">←</span>
+                Anterior
+            </button>
+            <button id="next-btn" class="nav-btn nav-btn-next">
+                Siguiente
+                <span class="btn-icon">→</span>
+            </button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,12 +1,13 @@
 // /home/hiramramirez/personalDev/hilos/static/script.js
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('form'); 
+    const form = document.querySelector('form');
     const imageInput = document.getElementById('imageInput');
-    const pinsInput = document.getElementById('pins');
-    const linesInput = document.getElementById('lines');
+    const pinsSelect = document.getElementById('pins');
+    const linesSelect = document.getElementById('lines');
     const previewImg = document.getElementById('preview');
     const resultImg = document.getElementById('result');
     const loadingDiv = document.getElementById('loading');
+    const progressText = document.getElementById('progressText');
     const errorDiv = document.getElementById('error');
     const generateBtn = document.getElementById('generateBtn');
 
@@ -14,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateGenerateButton() {
         generateBtn.disabled = !(
             imageInput.files.length > 0 && 
-            pinsInput.value.trim() !== '' && 
-            linesInput.value.trim() !== ''
+            pinsSelect.value && 
+            linesSelect.value
         );
     }
 
@@ -34,12 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Listeners para pines y líneas
-    pinsInput.addEventListener('input', () => {
-        console.log('Pins changed:', pinsInput.value);
+    pinsSelect.addEventListener('change', () => {
+        console.log('Pins selected:', pinsSelect.value);
         validateGenerateButton();
     });
-    linesInput.addEventListener('input', () => {
-        console.log('Lines changed:', linesInput.value);
+    linesSelect.addEventListener('change', () => {
+        console.log('Lines selected:', linesSelect.value);
         validateGenerateButton();
     });
 
@@ -58,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Crear URLSearchParams para otros parámetros
         const params = new URLSearchParams({
-            pins: pinsInput.value,
-            lines: linesInput.value
+            pins: pinsSelect.value,
+            lines: linesSelect.value
         });
 
         // Combinar FormData con parámetros de URL
@@ -67,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log('Sending request:', {
             url: fullUrl,
-            pins: pinsInput.value,
-            lines: linesInput.value
+            pins: pinsSelect.value,
+            lines: linesSelect.value
         });
 
         try {

@@ -6,6 +6,9 @@ import math as m
 import cv2
 import os
 import json
+import uuid
+import time
+import random
 
 def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixel_width=500):
     """
@@ -41,6 +44,13 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
     # Filename handling
     file_name = os.path.splitext(os.path.basename(file_path))[0]
 
+    # Read input image
+    img = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
+    
+    # Resize image if necessary
+    if img.shape[0] > pixel_width or img.shape[1] > pixel_width:
+        img = cv2.resize(img, (pixel_width, pixel_width), interpolation=cv2.INTER_AREA)
+
     # Crop image
     def crop(image):
         height, width = image.shape[0:2]
@@ -74,13 +84,8 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
     center = [PIXEL_WIDTH/2, PIXEL_WIDTH/2]
     radius = PIXEL_WIDTH/2 - 1/2
 
-    # Load image, crop, turn to grayscale, and resize image
-    img = cv2.imread(file_path, 0)
-    crop_img = crop(img)
-    resized = cv2.resize(crop_img, dim)
-
     # Mask the image to be circular
-    imgMasked = circularMask(PIXEL_WIDTH, resized, center, radius)
+    imgMasked = circularMask(PIXEL_WIDTH, img, center, radius)
 
     # Defining the pin coordinates
     pinCoord = pinCoordinates(PIN_NO, center, radius)
@@ -105,7 +110,7 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
             lineX[point1*PIN_NO + point2] = xCoords
 
     # Inverting the image for processing
-    invertedImg = np.ones((imgMasked.shape)) * 255 - resized.copy()
+    invertedImg = np.ones((imgMasked.shape)) * 255 - imgMasked.copy()
 
     # Resultant image canvas
     result = np.ones((imgMasked.shape[0] * SCALE, imgMasked.shape[1] * SCALE), np.uint8) * 255
@@ -116,7 +121,17 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
 
     lineSequence.append(currentPin)
 
+    def progress_generator():
+        total_steps = LINE_NO
+        for step in range(total_steps + 1):
+            progress = (step / total_steps) * 100
+            print(f"Progress: {progress:.2f}%")
+            yield progress
+
+    progress = progress_generator()
+
     for _ in tqdm(range(LINE_NO), desc="Creating lines: ", unit='Lines'):
+        next(progress)
         maxError = -m.inf
         bestPin = -1
         for difference in range(MIN_DISTANCE, PIN_NO-MIN_DISTANCE):

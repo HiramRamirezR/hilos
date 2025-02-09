@@ -38,25 +38,25 @@
                         <label for="pins">
                             <i class="fas fa-thumbtack"></i> Pins
                         </label>
-                        <input 
-                            type="number" 
+                        <select 
                             id="pins" 
-                            value="240" 
-                            min="10" 
-                            max="1000"
+                            name="pins"
                         >
+                            <option value="200">200 Pins</option>
+                            <option value="240" selected>240 Pins</option>
+                        </select>
                     </div>
                     <div class="setting">
                         <label for="lines">
                             <i class="fas fa-bezier-curve"></i> Líneas
                         </label>
-                        <input 
-                            type="number" 
+                        <select 
                             id="lines" 
-                            value="3500" 
-                            min="100" 
-                            max="10000"
+                            name="lines"
                         >
+                            <option value="3000">3000 Líneas</option>
+                            <option value="4500" selected>4500 Líneas</option>
+                        </select>
                     </div>
                 </div>
 

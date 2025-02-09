@@ -68,12 +68,6 @@ async def create_thread_image(
     - **lines**: Number of lines to draw (default: 3500)
     - **pixel_width**: Size of resulting image (default: 500)
     """
-    # Debug logging
-    print(f"Received parameters:")
-    print(f"Pins (type: {type(pins)}): {pins}")
-    print(f"Lines (type: {type(lines)}): {lines}")
-    print(f"Pixel Width (type: {type(pixel_width)}): {pixel_width}")
-
     # Validate file type
     allowed_types = ['image/jpeg', 'image/png']
     if file.content_type not in allowed_types:
@@ -111,16 +105,10 @@ async def create_thread_image(
             media_type="image/jpeg", 
             filename=os.path.basename(output_image_path)
         )
-
     except Exception as e:
-        # Log the full error for server-side debugging
-        print(f"Error processing image: {str(e)}")
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Error processing image: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
-        # Clean up input file
+        # Eliminar el archivo de entrada si existe
         if os.path.exists(input_path):
             os.remove(input_path)
 

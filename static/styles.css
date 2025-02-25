@@ -216,6 +216,43 @@ header h1 span {
     transition: width 0.5s ease-in-out;
 }
 
+/* Estilos generales para el formulario de pago */
+#payment-form {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* Estilo para el elemento de tarjeta */
+#card-element {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* Estilo para los errores de tarjeta */
+#card-errors {
+    color: #fa755a;
+    margin-top: 10px;
+}
+
+/* Estilo para el botón de pago */
+.pay-btn {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pay-btn:hover {
+    background-color: #45a049; /* Verde más oscuro */
+}
+
 @media (max-width: 480px) {
     .container {
         padding: 1rem;

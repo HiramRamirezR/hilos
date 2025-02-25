@@ -1,4 +1,3 @@
-// /home/hiramramirez/personalDev/hilos/static/script.js
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form');
     const imageInput = document.getElementById('imageInput');
@@ -9,22 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingDiv = document.getElementById('loading');
     const errorDiv = document.getElementById('error');
     const generateBtn = document.getElementById('generateBtn');
-    const cartBtn = document.getElementById('cartBtn');
 
-    cartBtn.addEventListener('click', () => {
-        console.log('Cart button clicked!');
-    })
+    // Inicializar Stripe
+    const stripe = Stripe('pk_test_51MZeZhFWYwy2FJ35A1FniJQBRkUJlF3JHFCAOlzdBxKxKJCbR0jyfi4SGaiv9QMMqE8FQ5FbLP6yXbo6seRrCFya00T5Ac9IT3'); // Reemplaza con tu clave pública
+    const elements = stripe.elements();
+    const cardElement = elements.create('card');
+    cardElement.mount('#card-element'); // Montar el elemento de tarjeta
 
     // Función para validar si el botón debe estar habilitado
     function validateGenerateButton() {
         generateBtn.disabled = !(
-            imageInput.files.length > 0 && 
-            pinsSelect.value && 
+            imageInput.files.length > 0 &&
+            pinsSelect.value &&
             linesSelect.value
         );
     }
 
-    // Preview selected image
+    // Vista previa de la imagen seleccionada
     imageInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -40,18 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Listeners para pines y líneas
     pinsSelect.addEventListener('change', () => {
-        console.log('Pins selected:', pinsSelect.value);
         validateGenerateButton();
     });
     linesSelect.addEventListener('change', () => {
-        console.log('Lines selected:', linesSelect.value);
         validateGenerateButton();
     });
 
+    // Manejar el envío del formulario de generación de imagen
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        
-        // Reset previous state
+
+        // Resetear estado anterior
         errorDiv.textContent = '';
         resultImg.style.display = 'none';
         loadingDiv.style.display = 'block';
@@ -70,12 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Combinar FormData con parámetros de URL
         const fullUrl = `/generate-thread-image/?${params.toString()}`;
 
-        console.log('Sending request:', {
-            url: fullUrl,
-            pins: pinsSelect.value,
-            lines: linesSelect.value
-        });
-
         try {
             const response = await fetch(fullUrl, {
                 method: 'POST',
@@ -89,15 +82,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const blob = await response.blob();
             const imageUrl = URL.createObjectURL(blob);
-            
             resultImg.src = imageUrl;
             resultImg.style.display = 'block';
         } catch (error) {
             errorDiv.textContent = error.message;
-            console.error('Error:', error);
         } finally {
             loadingDiv.style.display = 'none';
             validateGenerateButton();
+        }
+    });
+
+    // Manejar el pago
+    const payBtn = document.getElementById('payBtn');
+    payBtn.addEventListener('click', async (event) => {
+        event.preventDefault(); // Evita el envío del formulario
+
+        const response = await fetch('/create-payment-intent', {
+            method: 'POST',
+        });
+
+        const { clientSecret } = await response.json();
+
+        const { error } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardElement,
+                billing_details: {
+                    name: 'Nombre del Usuario',
+                },
+            },
+        });
+
+        if (error) {
+            console.error('Error:', error);
+            alert('Error en el pago: ' + error.message);
+        } else {
+            alert('Pago exitoso!');
         }
     });
 });

@@ -10,6 +10,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from hilos import generate_thread_image
+import stripe
+
+stripe.api_key = 'sk_test_51MZeZhFWYwy2FJ353OSQ58zQtmtKr52f1Ow9F1qdtUgMn8d0kqjcAElMXtsOqgufeCB9YchXp0RATaSAFx7FJahv00zlEq7BgO'
 
 app = FastAPI(
     title="Thread Image Generator",
@@ -44,7 +47,7 @@ async def serve_index():
 async def health_check():
     """
     Simple health check endpoint to verify the application is running.
-    
+
     Returns:
         dict: A simple status message
     """
@@ -55,14 +58,14 @@ async def health_check():
 
 @app.post("/generate-thread-image/")
 async def create_thread_image(
-    file: UploadFile = File(...), 
-    pins: Optional[int] = Query(240), 
-    lines: Optional[int] = Query(3500), 
+    file: UploadFile = File(...),
+    pins: Optional[int] = Query(240),
+    lines: Optional[int] = Query(3500),
     pixel_width: Optional[int] = Query(500)
 ):
     """
     Generate a thread-like representation of an uploaded image.
-    
+
     - **file**: Image file to process
     - **pins**: Number of pins (default: 240)
     - **lines**: Number of lines to draw (default: 3500)
@@ -72,7 +75,7 @@ async def create_thread_image(
     allowed_types = ['image/jpeg', 'image/png']
     if file.content_type not in allowed_types:
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail=f"Unsupported file type. Only JPEG and PNG are supported. Received: {file.content_type}"
         )
 
@@ -92,17 +95,17 @@ async def create_thread_image(
 
         # Generate thread image
         output_image_path, line_sequence_path = generate_thread_image(
-            input_path, 
-            OUTPUT_DIR, 
-            pins=pins, 
-            lines=lines, 
+            input_path,
+            OUTPUT_DIR,
+            pins=pins,
+            lines=lines,
             pixel_width=pixel_width
         )
 
         # Return the generated image
         return FileResponse(
-            output_image_path, 
-            media_type="image/jpeg", 
+            output_image_path,
+            media_type="image/jpeg",
             filename=os.path.basename(output_image_path)
         )
     except Exception as e:
@@ -121,6 +124,18 @@ async def get_output_file(filename: str):
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(file_path)
+
+@app.post('/create-payment-intent')
+async def create_payment_intent():
+    try:
+        payment_intent = stripe.PaymentIntent.create(
+            amount=1000,  # Cambia esto según el monto que deseas cobrar
+            currency='usd',
+            payment_method_types=['card'],
+        )
+        return {'clientSecret': payment_intent['client_secret']}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

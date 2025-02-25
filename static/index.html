@@ -16,11 +16,11 @@
         <main>
             <form>
                 <div class="image-upload-container">
-                    <input 
-                        type="file" 
-                        id="imageInput" 
-                        accept="image/*" 
-                        required 
+                    <input
+                        type="file"
+                        id="imageInput"
+                        accept="image/*"
+                        required
                         class="file-input"
                     >
                     <label for="imageInput" class="file-input-label">
@@ -38,8 +38,8 @@
                         <label for="pins">
                             <i class="fas fa-thumbtack"></i> Pins
                         </label>
-                        <select 
-                            id="pins" 
+                        <select
+                            id="pins"
                             name="pins"
                         >
                             <option value="200">200 Pins</option>
@@ -50,8 +50,8 @@
                         <label for="lines">
                             <i class="fas fa-bezier-curve"></i> Líneas
                         </label>
-                        <select 
-                            id="lines" 
+                        <select
+                            id="lines"
                             name="lines"
                         >
                             <option value="1000">1000 Líneas</option>
@@ -66,10 +66,6 @@
                 </button>
             </form>
 
-            <button id="cartBtn">
-                <i class="fas fa-shopping-cart"></i> Agregar al Carrito
-            </button>
-
             <div id="status" class="status-container">
                 <div id="loading" class="loading">
                     <i class="fas fa-spinner fa-spin"></i>
@@ -81,9 +77,19 @@
             <div class="result-container">
                 <img id="result" alt="Imagen generada" class="result-image">
             </div>
+
+            <form id="payment-form">
+                <h2>Información de Pago</h2>
+                <label for="card-element">Ingrese su número de tarjeta de crédito:</label>
+                <div id="card-element"></div> <!-- Aquí se mostrará el elemento de tarjeta -->
+                <div id="card-errors" role="alert"></div> <!-- Para mostrar errores de tarjeta -->
+                <button id="payBtn" class="pay-btn">Realizar Pago</button>
+            </form>
+
         </main>
     </div>
 
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="/static/script.js"></script>
 </body>
 </html>

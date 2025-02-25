@@ -1,8 +1,9 @@
-opencv-python-headless==4.7.0.72
-numpy==1.24.3
-Pillow==9.5.0
-tqdm==4.65.0
-fastapi==0.95.1
-uvicorn==0.22.0
+fastapi==0.103.2
+opencv-python-headless==4.8.0.74
+numpy==1.25.2
+Pillow==10.0.1
+uvicorn==0.23.2
+tqdm==4.66.1
 python-multipart==0.0.6
-python-jose==3.3.0
+python-jose[cryptography]==3.3.0
+stripe==6.3.0

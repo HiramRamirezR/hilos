@@ -7,9 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewImg = document.getElementById('preview');
     const resultImg = document.getElementById('result');
     const loadingDiv = document.getElementById('loading');
-    const progressText = document.getElementById('progressText');
     const errorDiv = document.getElementById('error');
     const generateBtn = document.getElementById('generateBtn');
+    const cartBtn = document.getElementById('cartBtn');
+
+    cartBtn.addEventListener('click', () => {
+        console.log('Cart button clicked!');
+    })
 
     // Función para validar si el botón debe estar habilitado
     function validateGenerateButton() {

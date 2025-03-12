@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorDiv = document.getElementById('error');
     const generateBtn = document.getElementById('generateBtn');
 
+    // Variables globales para el proceso de compra
+    let currentImageData = null;
+
     // Inicializar Stripe
     const stripe = Stripe('pk_test_51MZeZhFWYwy2FJ35A1FniJQBRkUJlF3JHFCAOlzdBxKxKJCbR0jyfi4SGaiv9QMMqE8FQ5FbLP6yXbo6seRrCFya00T5Ac9IT3'); // Reemplaza con tu clave pública
     const elements = stripe.elements();
@@ -84,6 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageUrl = URL.createObjectURL(blob);
             resultImg.src = imageUrl;
             resultImg.style.display = 'block';
+
+            // Guardar datos de la imagen actual
+            currentImageData = {
+                imageUrl: imageUrl,
+                pins: pinsSelect.value,
+                lines: linesSelect.value
+            };
+
+            // Mostrar botón de compra
+            document.getElementById('buyButton').style.display = 'block';
         } catch (error) {
             errorDiv.textContent = error.message;
         } finally {
@@ -92,31 +105,73 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Manejar el pago
-    const payBtn = document.getElementById('payBtn');
-    payBtn.addEventListener('click', async (event) => {
-        event.preventDefault(); // Evita el envío del formulario
+    // Manejar clic en botón de compra
+    document.getElementById('buyButton').addEventListener('click', () => {
+        document.getElementById('purchaseProcess').style.display = 'block';
+        document.getElementById('paymentStep').scrollIntoView({ behavior: 'smooth' });
+    });
 
-        const response = await fetch('/create-payment-intent', {
-            method: 'POST',
-        });
-
-        const { clientSecret } = await response.json();
-
-        const { error } = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-                card: cardElement,
-                billing_details: {
-                    name: 'Nombre del Usuario',
+    // Manejar el pago con Stripe
+    document.getElementById('payBtn').addEventListener('click', async () => {
+        try {
+            const response = await fetch('/create-payment-intent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-            },
-        });
+                body: JSON.stringify({
+                    imageData: currentImageData
+                })
+            });
 
-        if (error) {
-            console.error('Error:', error);
-            alert('Error en el pago: ' + error.message);
-        } else {
-            alert('Pago exitoso!');
+            const { clientSecret } = await response.json();
+
+            const result = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: cardElement,
+                }
+            });
+
+            if (result.error) {
+                document.getElementById('card-errors').textContent = result.error.message;
+            } else {
+                // Pago exitoso, mostrar formulario de registro
+                document.getElementById('paymentStep').style.display = 'none';
+                document.getElementById('registrationStep').style.display = 'block';
+                document.getElementById('registrationStep').scrollIntoView({ behavior: 'smooth' });
+            }
+        } catch (error) {
+            document.getElementById('card-errors').textContent = 'Error procesando el pago';
+        }
+    });
+
+    // Manejar el registro
+    document.getElementById('registrationForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const userData = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/register-user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...userData,
+                    imageData: currentImageData
+                })
+            });
+
+            if (!response.ok) throw new Error('Error en el registro');
+
+            // Mostrar confirmación
+            document.getElementById('registrationStep').style.display = 'none';
+            document.getElementById('confirmationStep').style.display = 'block';
+            document.getElementById('confirmationStep').scrollIntoView({ behavior: 'smooth' });
+        } catch (error) {
+            alert('Error al registrar usuario: ' + error.message);
         }
     });
 });

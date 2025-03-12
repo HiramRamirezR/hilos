@@ -241,7 +241,8 @@ header h1 span {
 
 /* Estilo para el botón de pago */
 .pay-btn {
-    background-color: #4CAF50; /* Verde */
+    background-color: #4CAF50;
+    /* Verde */
     color: white;
     padding: 10px 15px;
     border: none;
@@ -250,7 +251,101 @@ header h1 span {
 }
 
 .pay-btn:hover {
-    background-color: #45a049; /* Verde más oscuro */
+    background-color: #45a049;
+    /* Verde más oscuro */
+}
+
+/* Estilos para el botón de compra */
+.buy-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 15px 30px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+
+.buy-btn:hover {
+    background-color: #27ae60;
+}
+
+/* Estilos para el proceso de compra */
+.purchase-process {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.purchase-step {
+    margin-bottom: 30px;
+}
+
+.purchase-step h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.registration-form .form-group {
+    margin-bottom: 15px;
+}
+
+.registration-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #34495e;
+}
+
+.registration-form input,
+.registration-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.registration-form textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.process-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.process-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Estilos para el elemento de tarjeta de Stripe */
+#card-element {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+#card-errors {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-size: 0.9em;
 }
 
 @media (max-width: 480px) {

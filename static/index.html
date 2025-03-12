@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/static/styles.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -16,13 +18,7 @@
         <main>
             <form>
                 <div class="image-upload-container">
-                    <input
-                        type="file"
-                        id="imageInput"
-                        accept="image/*"
-                        required
-                        class="file-input"
-                    >
+                    <input type="file" id="imageInput" accept="image/*" required class="file-input">
                     <label for="imageInput" class="file-input-label">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <span>Selecciona una imagen</span>
@@ -38,10 +34,7 @@
                         <label for="pins">
                             <i class="fas fa-thumbtack"></i> Pins
                         </label>
-                        <select
-                            id="pins"
-                            name="pins"
-                        >
+                        <select id="pins" name="pins">
                             <option value="200">200 Pins</option>
                             <option value="240" selected>240 Pins</option>
                         </select>
@@ -50,10 +43,7 @@
                         <label for="lines">
                             <i class="fas fa-bezier-curve"></i> Líneas
                         </label>
-                        <select
-                            id="lines"
-                            name="lines"
-                        >
+                        <select id="lines" name="lines">
                             <option value="1000">1000 Líneas</option>
                             <option value="3500">3500 Líneas</option>
                             <option value="4500" selected>4500 Líneas</option>
@@ -76,20 +66,62 @@
 
             <div class="result-container">
                 <img id="result" alt="Imagen generada" class="result-image">
+                <!-- Agregamos el botón de compra -->
+                <button id="buyButton" class="buy-btn" style="display: none;">
+                    <i class="fas fa-shopping-cart"></i> Comprar esta imagen
+                </button>
             </div>
 
-            <form id="payment-form">
-                <h2>Información de Pago</h2>
-                <label for="card-element">Ingrese su número de tarjeta de crédito:</label>
-                <div id="card-element"></div> <!-- Aquí se mostrará el elemento de tarjeta -->
-                <div id="card-errors" role="alert"></div> <!-- Para mostrar errores de tarjeta -->
-                <button id="payBtn" class="pay-btn">Realizar Pago</button>
-            </form>
+            <!-- Formulario de pago y registro -->
+            <div id="purchaseProcess" class="purchase-process" style="display: none;">
+                <!-- Paso 1: Pago -->
+                <div id="paymentStep" class="purchase-step">
+                    <h2>Paso 1: Información de Pago</h2>
+                    <div id="card-element"></div>
+                    <div id="card-errors" role="alert"></div>
+                    <button id="payBtn" class="process-btn">
+                        <i class="fas fa-credit-card"></i> Realizar Pago
+                    </button>
+                </div>
 
+                <!-- Paso 2: Registro (inicialmente oculto) -->
+                <div id="registrationStep" class="purchase-step" style="display: none;">
+                    <h2>Paso 2: Información de Envío</h2>
+                    <form id="registrationForm" class="registration-form">
+                        <div class="form-group">
+                            <label for="name">Nombre completo:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Teléfono:</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo electrónico:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Dirección:</label>
+                            <textarea id="address" name="address" required></textarea>
+                        </div>
+                        <button type="submit" class="process-btn">
+                            <i class="fas fa-check"></i> Completar Registro
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Paso 3: Confirmación (inicialmente oculto) -->
+                <div id="confirmationStep" class="purchase-step" style="display: none;">
+                    <h2>¡Gracias por tu compra!</h2>
+                    <p>Hemos enviado un correo electrónico con las instrucciones para acceder a tu imagen.</p>
+                    <p>Por favor revisa tu bandeja de entrada.</p>
+                </div>
+            </div>
         </main>
     </div>
 
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/static/script.js"></script>
 </body>
+
 </html>

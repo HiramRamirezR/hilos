@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thread Viewer</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Guía de Hilos - Tu Imagen Personalizada</title>
+    <link rel="stylesheet" href="/thread_viewer/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
+    <div class="header">
+        <h1><i class="fas fa-thread"></i> Tu Imagen de Hilos Personalizada</h1>
+        <p class="subtitle">Guía paso a paso para recrear tu imagen con el kit de hilos</p>
+    </div>
+
+    <div class="instructions-panel">
+        <div class="instructions-content">
+            <h3><i class="fas fa-info-circle"></i> Instrucciones</h3>
+            <ul>
+                <li><strong>Paso a paso:</strong> Usa los botones o las flechas del teclado para navegar</li>
+                <li><strong>Círculo dividido:</strong> Cada cuarto representa una sección de tu tablero circular</li>
+                <li><strong>Números:</strong> Indican el pin específico donde debes colocar el hilo</li>
+                <li><strong>Secuencia:</strong> Sigue el orden exacto para recrear tu imagen</li>
+            </ul>
+        </div>
+    </div>
+
     <div class="thread-viewer-container">
         <div id="progress-counter" class="progress-counter">
             Paso 0 de 0
@@ -46,6 +66,7 @@
             </button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="/thread_viewer/script.js"></script>
 </body>
+
 </html>

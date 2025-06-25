@@ -12,11 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Variables globales para el proceso de compra
     let currentImageData = null;
 
-    // Inicializar Stripe
-    const stripe = Stripe('pk_test_51MZeZhFWYwy2FJ35A1FniJQBRkUJlF3JHFCAOlzdBxKxKJCbR0jyfi4SGaiv9QMMqE8FQ5FbLP6yXbo6seRrCFya00T5Ac9IT3'); // Reemplaza con tu clave pública
-    const elements = stripe.elements();
-    const cardElement = elements.create('card');
-    cardElement.mount('#card-element'); // Montar el elemento de tarjeta
+    // URL de Stripe Checkout (se configurará desde el backend)
+    let stripeCheckoutUrl = null;
 
     // Función para validar si el botón debe estar habilitado
     function validateGenerateButton() {
@@ -42,38 +39,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Listeners para pines y líneas
-    pinsSelect.addEventListener('change', () => {
-        validateGenerateButton();
-    });
-    linesSelect.addEventListener('change', () => {
-        validateGenerateButton();
-    });
+    pinsSelect.addEventListener('change', validateGenerateButton);
+    linesSelect.addEventListener('change', validateGenerateButton);
 
     // Manejar el envío del formulario de generación de imagen
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        // Resetear estado anterior
         errorDiv.textContent = '';
         resultImg.style.display = 'none';
         loadingDiv.style.display = 'block';
         generateBtn.disabled = true;
 
-        // Crear FormData para el archivo
         const formData = new FormData();
         formData.append('file', imageInput.files[0]);
 
-        // Crear URLSearchParams para otros parámetros
         const params = new URLSearchParams({
             pins: pinsSelect.value,
             lines: linesSelect.value
         });
 
-        // Combinar FormData con parámetros de URL
-        const fullUrl = `/generate-thread-image/?${params.toString()}`;
-
         try {
-            const response = await fetch(fullUrl, {
+            const response = await fetch(`/generate-thread-image/?${params.toString()}`, {
                 method: 'POST',
                 body: formData
             });
@@ -88,15 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
             resultImg.src = imageUrl;
             resultImg.style.display = 'block';
 
-            // Guardar datos de la imagen actual
+            const contentDisposition = response.headers.get('content-disposition');
+            const filename = contentDisposition
+                ? contentDisposition.split('filename=')[1].replace(/['"]/g, '')
+                : `${Date.now()}_output.png`;
+
             currentImageData = {
-                imageUrl: imageUrl,
+                filename: filename,
                 pins: pinsSelect.value,
-                lines: linesSelect.value
+                lines: linesSelect.value,
+                originalFile: imageInput.files[0].name
             };
 
-            // Mostrar botón de compra
             document.getElementById('buyButton').style.display = 'block';
+            document.getElementById('purchaseInfo').style.display = 'block';
         } catch (error) {
             errorDiv.textContent = error.message;
         } finally {
@@ -106,15 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Manejar clic en botón de compra
-    document.getElementById('buyButton').addEventListener('click', () => {
-        document.getElementById('purchaseProcess').style.display = 'block';
-        document.getElementById('paymentStep').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Manejar el pago con Stripe
-    document.getElementById('payBtn').addEventListener('click', async () => {
+    document.getElementById('buyButton').addEventListener('click', async () => {
         try {
-            const response = await fetch('/create-payment-intent', {
+            // Crear sesión de checkout en el backend
+            const response = await fetch('/create-checkout-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -124,54 +111,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
-            const { clientSecret } = await response.json();
-
-            const result = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: cardElement,
-                }
-            });
-
-            if (result.error) {
-                document.getElementById('card-errors').textContent = result.error.message;
-            } else {
-                // Pago exitoso, mostrar formulario de registro
-                document.getElementById('paymentStep').style.display = 'none';
-                document.getElementById('registrationStep').style.display = 'block';
-                document.getElementById('registrationStep').scrollIntoView({ behavior: 'smooth' });
+            if (!response.ok) {
+                throw new Error('Error al crear sesión de checkout');
             }
+
+            const { checkout_url } = await response.json();
+
+            // Redirigir a Stripe Checkout
+            window.location.href = checkout_url;
+
         } catch (error) {
-            document.getElementById('card-errors').textContent = 'Error procesando el pago';
+            console.error('Error:', error);
+            alert('Error al procesar la compra: ' + error.message);
         }
     });
 
-    // Manejar el registro
-    document.getElementById('registrationForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(event.target);
-        const userData = Object.fromEntries(formData.entries());
-
-        try {
-            const response = await fetch('/register-user', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    ...userData,
-                    imageData: currentImageData
-                })
-            });
-
-            if (!response.ok) throw new Error('Error en el registro');
-
-            // Mostrar confirmación
-            document.getElementById('registrationStep').style.display = 'none';
-            document.getElementById('confirmationStep').style.display = 'block';
-            document.getElementById('confirmationStep').scrollIntoView({ behavior: 'smooth' });
-        } catch (error) {
-            alert('Error al registrar usuario: ' + error.message);
-        }
-    });
 });

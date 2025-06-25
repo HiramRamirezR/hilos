@@ -1,9 +1,86 @@
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Header */
+.header {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 2.5rem;
+    font-weight: 300;
+}
+
+.header h1 i {
+    color: #3498db;
+    margin-right: 0.5rem;
+}
+
+.subtitle {
+    margin: 0.5rem 0 0 0;
+    color: #7f8c8d;
+    font-size: 1.2rem;
+}
+
+/* Panel de instrucciones */
+.instructions-panel {
+    background: rgba(255, 255, 255, 0.9);
+    margin: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.instructions-content {
+    padding: 1.5rem;
+}
+
+.instructions-content h3 {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+}
+
+.instructions-content h3 i {
+    color: #3498db;
+    margin-right: 0.5rem;
+}
+
+.instructions-content ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.instructions-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.instructions-content strong {
+    color: #2c3e50;
+}
+
 .thread-viewer-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
     padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    margin: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .donut-container {
@@ -18,12 +95,15 @@
     border-radius: 50%;
     position: relative;
     overflow: hidden;
-    background: conic-gradient(
-        #4CAF50 0deg 90deg,  /* Q1 verde */
-        #2196F3 90deg 180deg,  /* Q2 azul */
-        #F44336 180deg 270deg,  /* Q3 rojo */
-        #FFC107 270deg 360deg  /* Q4 amarillo */
-    );
+    background: conic-gradient(#4CAF50 0deg 90deg,
+            /* Q1 verde */
+            #2196F3 90deg 180deg,
+            /* Q2 azul */
+            #F44336 180deg 270deg,
+            /* Q3 rojo */
+            #FFC107 270deg 360deg
+            /* Q4 amarillo */
+        );
     transition: all 0.3s ease;
 }
 
@@ -37,10 +117,25 @@
     overflow: hidden;
 }
 
-.q1 { top: 0; left: 0; }
-.q2 { top: 0; right: 0; }
-.q3 { bottom: 0; right: 0; }
-.q4 { bottom: 0; left: 0; }
+.q1 {
+    top: 0;
+    left: 0;
+}
+
+.q2 {
+    top: 0;
+    right: 0;
+}
+
+.q3 {
+    bottom: 0;
+    right: 0;
+}
+
+.q4 {
+    bottom: 0;
+    left: 0;
+}
 
 .quarter-circle {
     width: 100px;
@@ -49,15 +144,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255,255,255,0.2);
-    border: 2px dashed rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px dashed rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease;
 }
 
 .quarter-number {
     font-size: 2rem;
     font-weight: bold;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .quarter.active {
@@ -69,8 +164,8 @@
 }
 
 .quarter.active .quarter-circle {
-    background-color: rgba(255,255,255,0.5);
-    border-color: rgba(255,255,255,0.8);
+    background-color: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.8);
 }
 
 .quarter.active .quarter-number {
@@ -83,7 +178,7 @@
     font-weight: bold;
     color: #333;
     margin-bottom: 20px;
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(0, 0, 0, 0.05);
     padding: 10px;
     border-radius: 10px;
 }
@@ -109,18 +204,18 @@
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .nav-btn:hover {
     background-color: #5a5a5a;
     transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 .nav-btn:active {
     transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-icon {

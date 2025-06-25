@@ -273,6 +273,96 @@ header h1 span {
     background-color: #27ae60;
 }
 
+/* Estilos para la página de éxito */
+.success-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.success-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #2ecc71;
+    margin-bottom: 1rem;
+}
+
+.registration-section {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.registration-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.confirmation-section {
+    text-align: center;
+    padding: 2rem;
+}
+
+.success-message {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #2980b9;
+}
+
+.error-message {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+}
+
+/* Estilos para la información de compra */
+.purchase-info {
+    margin-top: 1rem;
+}
+
+.info-box {
+    background: #e3f2fd;
+    border: 1px solid #bbdefb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.info-box h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.info-box p {
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
 /* Estilos para el proceso de compra */
 .purchase-process {
     max-width: 600px;

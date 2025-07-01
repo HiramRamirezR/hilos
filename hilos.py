@@ -47,14 +47,7 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
 
     # Read input image
     img = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
-    
-    # Resize image if necessary
-    if img.shape[0] > pixel_width or img.shape[1] > pixel_width:
-        img = cv2.resize(img, (pixel_width, pixel_width), interpolation=cv2.INTER_AREA)
 
-    # Read input image
-    img = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
-    
     # Resize image if necessary
     if img.shape[0] > pixel_width or img.shape[1] > pixel_width:
         img = cv2.resize(img, (pixel_width, pixel_width), interpolation=cv2.INTER_AREA)
@@ -177,7 +170,7 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
         json.dump(lineSequence, f)
 
     # Liberar memoria explícitamente
-    del img, img_array, lineSequence
+    del img, resultImg, lineSequence
     gc.collect()
 
     return output_image_path, line_sequence_path

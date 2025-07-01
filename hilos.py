@@ -9,6 +9,7 @@ import json
 import uuid
 import time
 import random
+import gc
 
 def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixel_width=500):
     """
@@ -174,6 +175,10 @@ def generate_thread_image(file_path, output_dir=None, pins=240, lines=3500, pixe
     line_sequence_path = os.path.join(output_dir, f"{file_name}.json")
     with open(line_sequence_path, "w") as f:
         json.dump(lineSequence, f)
+
+    # Liberar memoria explícitamente
+    del img, img_array, lineSequence
+    gc.collect()
 
     return output_image_path, line_sequence_path
 

@@ -42,6 +42,57 @@ document.addEventListener('DOMContentLoaded', () => {
     pinsSelect.addEventListener('change', validateGenerateButton);
     linesSelect.addEventListener('change', validateGenerateButton);
 
+    // Función para actualizar la barra de progreso
+    function updateProgress(progress, status) {
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const progressStatus = document.getElementById('progress-status');
+
+        progressBar.style.width = `${progress}%`;
+        progressPercentage.textContent = `${progress}%`;
+        progressStatus.textContent = status;
+    }
+
+    // Función para simular progreso estimado (15-17 segundos)
+    function simulateProgress() {
+        const totalTime = 16000; // 16 segundos promedio
+        const updateInterval = 100; // Actualizar cada 100ms
+        const totalUpdates = totalTime / updateInterval;
+        let currentUpdate = 0;
+
+        const phases = [
+            { end: 0.1, status: '✨ Analizando tu obra maestra...' },
+            { end: 0.25, status: '🎨 Creando la paleta mágica...' },
+            { end: 0.4, status: '📐 Calculando coordenadas artísticas...' },
+            { end: 0.6, status: '🧵 Tejiendo los primeros hilos...' },
+            { end: 0.8, status: '🎭 Agregando toques de magia...' },
+            { end: 0.95, status: '✨ Dando los últimos retoques...' },
+            { end: 1.0, status: '🎉 ¡Tu arte está listo!' }
+        ];
+
+        const progressInterval = setInterval(() => {
+            currentUpdate++;
+            const progress = Math.min((currentUpdate / totalUpdates) * 100, 99);
+
+            // Determinar el estado actual
+            let currentStatus = 'Procesando...';
+            for (const phase of phases) {
+                if (progress / 100 <= phase.end) {
+                    currentStatus = phase.status;
+                    break;
+                }
+            }
+
+            updateProgress(Math.floor(progress), currentStatus);
+
+            if (currentUpdate >= totalUpdates) {
+                clearInterval(progressInterval);
+            }
+        }, updateInterval);
+
+        return progressInterval;
+    }
+
     // Manejar el envío del formulario de generación de imagen
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -50,6 +101,12 @@ document.addEventListener('DOMContentLoaded', () => {
         resultImg.style.display = 'none';
         loadingDiv.style.display = 'block';
         generateBtn.disabled = true;
+
+        // Inicializar barra de progreso
+        updateProgress(0, '🚀 Preparando la magia...');
+
+        // Iniciar simulación de progreso
+        const progressInterval = simulateProgress();
 
         const formData = new FormData();
         formData.append('file', imageInput.files[0]);
@@ -87,10 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 originalFile: imageInput.files[0].name
             };
 
+            // Detener simulación y mostrar 100%
+            clearInterval(progressInterval);
+            updateProgress(100, '🎨✨ ¡Tu obra maestra está lista! ✨🎨');
+
             document.getElementById('buyButton').style.display = 'block';
             document.getElementById('purchaseInfo').style.display = 'block';
         } catch (error) {
+            // Detener simulación en caso de error
+            clearInterval(progressInterval);
             errorDiv.textContent = error.message;
+            updateProgress(0, '😔 Ups, algo salió mal...');
         } finally {
             loadingDiv.style.display = 'none';
             validateGenerateButton();

@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 from fastapi.staticfiles import StaticFiles
 from email.mime.multipart import MIMEMultipart
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi import FastAPI, File, UploadFile, HTTPException, Depends, status
 from dotenv import load_dotenv
 
@@ -61,6 +61,8 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # Crear las tablas de la base de datos
 Base.metadata.create_all(bind=engine)
 
+
+
 @app.get("/")
 async def read_root():
     """Servir la página principal"""
@@ -86,7 +88,7 @@ async def generate_thread_image_endpoint(
             content = await file.read()
             buffer.write(content)
 
-        # Generar la imagen de hilos
+        # Generar la imagen de hilos (sin callback para mejor rendimiento)
         output_image_path, line_sequence_path = generate_thread_image(
             temp_path,
             output_dir=OUTPUT_DIR,

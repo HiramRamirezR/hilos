@@ -70,9 +70,7 @@ async def read_root():
 
 @app.post("/generate-thread-image/")
 async def generate_thread_image_endpoint(
-    file: UploadFile = File(...),
-    pins: int = 240,
-    lines: int = 3500
+    file: UploadFile = File(...)
 ):
     """Generar imagen de hilos a partir de una imagen subida"""
     try:
@@ -92,8 +90,8 @@ async def generate_thread_image_endpoint(
         output_image_path, line_sequence_path = generate_thread_image(
             temp_path,
             output_dir=OUTPUT_DIR,
-            pins=pins,
-            lines=lines
+            pins=180,
+            lines=4500
         )
 
         # Eliminar el archivo temporal
@@ -115,8 +113,6 @@ async def generate_thread_image_endpoint(
 
 class ImageData(BaseModel):
     filename: str
-    pins: str
-    lines: str
     originalFile: str = None
 
 class UserRegistration(BaseModel):
@@ -188,8 +184,8 @@ async def create_checkout_session(request: CheckoutRequest):
                 'price_data': {
                     'currency': 'usd',
                     'product_data': {
-                        'name': f'Imagen de Hilos - {request.imageData.pins} pines, {request.imageData.lines} líneas',
-                        'description': f'Imagen personalizada generada con {request.imageData.pins} pines y {request.imageData.lines} líneas',
+                        'name': f'Imagen de Hilos - 180 pines, 4500 líneas',
+                        'description': f'Imagen personalizada generada con 180 pines y 4500 líneas',
                     },
                     'unit_amount': 2500,  # $25.00 en centavos
                 },
@@ -200,8 +196,6 @@ async def create_checkout_session(request: CheckoutRequest):
             cancel_url='http://localhost:8000/',
             metadata={
                 'filename': request.imageData.filename,
-                'pins': request.imageData.pins,
-                'lines': request.imageData.lines,
                 'original_file': request.imageData.originalFile or ''
             }
         )
@@ -241,8 +235,6 @@ async def complete_registration(
         metadata = session.metadata
         image_data = ImageData(
             filename=metadata.get('filename', ''),
-            pins=metadata.get('pins', ''),
-            lines=metadata.get('lines', ''),
             originalFile=metadata.get('original_file', '')
         )
 

@@ -56,9 +56,9 @@ async function loadThreadSequence() {
             currentIndex = 0;
         }
 
-        const totalPins = 200; // Ajustar según la selección del usuario
+        const totalPins = 180; // Ajustado a 180 pines
         const quartersCount = 4;
-        const pinsPerQuarter = totalPins / quartersCount;
+        const pinsPerQuarter = totalPins / quartersCount; // Esto será 45
 
         function getQuarterAndLocalIndex(globalIndex) {
             if (globalIndex === 0) return { quarter: 0, localIndex: 0 };

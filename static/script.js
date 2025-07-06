@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form');
     const imageInput = document.getElementById('imageInput');
-    const pinsSelect = document.getElementById('pins');
-    const linesSelect = document.getElementById('lines');
     const previewImg = document.getElementById('preview');
     const resultImg = document.getElementById('result');
     const loadingDiv = document.getElementById('loading');
@@ -17,11 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para validar si el botón debe estar habilitado
     function validateGenerateButton() {
-        generateBtn.disabled = !(
-            imageInput.files.length > 0 &&
-            pinsSelect.value &&
-            linesSelect.value
-        );
+        generateBtn.disabled = !(imageInput.files.length > 0);
     }
 
     // Vista previa de la imagen seleccionada
@@ -37,10 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.readAsDataURL(file);
         }
     });
-
-    // Listeners para pines y líneas
-    pinsSelect.addEventListener('change', validateGenerateButton);
-    linesSelect.addEventListener('change', validateGenerateButton);
 
     // Función para actualizar la barra de progreso
     function updateProgress(progress, status) {
@@ -111,13 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('file', imageInput.files[0]);
 
-        const params = new URLSearchParams({
-            pins: pinsSelect.value,
-            lines: linesSelect.value
-        });
-
         try {
-            const response = await fetch(`/generate-thread-image/?${params.toString()}`, {
+            const response = await fetch(`/generate-thread-image/`, {
                 method: 'POST',
                 body: formData
             });
@@ -139,8 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             currentImageData = {
                 filename: filename,
-                pins: pinsSelect.value,
-                lines: linesSelect.value,
                 originalFile: imageInput.files[0].name
             };
 

@@ -11,7 +11,7 @@ async function loadUserName() {
         const userData = await response.json();
         const userNameSpan = document.getElementById('user-name');
         if (userNameSpan) {
-            userNameSpan.textContent = `de ${userData.name}`;
+            userNameSpan.textContent = `${userData.name}`;
         }
     } catch (error) {
         console.error('Error cargando nombre de usuario:', error);

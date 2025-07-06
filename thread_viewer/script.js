@@ -1,3 +1,23 @@
+async function loadUserName() {
+    try {
+        const pathParts = window.location.pathname.split('/');
+        const uniqueLink = pathParts[pathParts.length - 1];
+
+        const response = await fetch(`/api/user-data/${uniqueLink}`);
+        if (!response.ok) {
+            throw new Error('No se pudo cargar el nombre del usuario');
+        }
+
+        const userData = await response.json();
+        const userNameSpan = document.getElementById('user-name');
+        if (userNameSpan) {
+            userNameSpan.textContent = `de ${userData.name}`;
+        }
+    } catch (error) {
+        console.error('Error cargando nombre de usuario:', error);
+    }
+}
+
 async function loadThreadSequence() {
     try {
         // Obtener el unique_link de la URL
@@ -12,7 +32,15 @@ async function loadThreadSequence() {
 
         const threadSequence = await response.json();
 
-        let currentIndex = 0;
+        // Obtener el paso guardado de localStorage
+        const savedIndex = localStorage.getItem(`threadProgress_${uniqueLink}`);
+        let currentIndex = savedIndex ? parseInt(savedIndex) : 0;
+
+        // Asegurarse de que el índice guardado no exceda la longitud de la secuencia
+        if (currentIndex >= threadSequence.length) {
+            currentIndex = 0;
+        }
+
         const totalPins = 200; // Ajustar según la selección del usuario
         const quartersCount = 4;
         const pinsPerQuarter = totalPins / quartersCount;
@@ -24,6 +52,10 @@ async function loadThreadSequence() {
             const localIndex = ((globalIndex - 1) % pinsPerQuarter) + 1;
 
             return { quarter, localIndex };
+        }
+
+        function saveProgress() {
+            localStorage.setItem(`threadProgress_${uniqueLink}`, currentIndex);
         }
 
         function renderSequence() {
@@ -54,6 +86,7 @@ async function loadThreadSequence() {
                     }
                 }
             }
+            saveProgress(); // Guardar el progreso cada vez que se renderiza la secuencia
         }
 
         function nextNumber() {
@@ -92,5 +125,8 @@ async function loadThreadSequence() {
     }
 }
 
-// Call the function when the page loads
-document.addEventListener('DOMContentLoaded', loadThreadSequence);
+// Call the functions when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadUserName();
+    loadThreadSequence();
+});

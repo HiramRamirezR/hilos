@@ -381,6 +381,26 @@ async def get_thread_data(unique_link: str, db: Session = Depends(get_db)):
         logger.error(f"Error obteniendo datos de hilos: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get('/api/user-data/{unique_link}')
+async def get_user_data(unique_link: str, db: Session = Depends(get_db)):
+    """Obtener el nombre del usuario asociado a un enlace único"""
+    try:
+        purchase = db.query(Purchase).filter(Purchase.unique_link == unique_link).first()
+        if not purchase:
+            raise HTTPException(status_code=404, detail="Enlace no válido o expirado")
+
+        user = db.query(User).filter(User.id == purchase.user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        return {"name": user.name}
+
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error(f"Error obteniendo datos del usuario: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post('/register-user')
 async def register_user(
     user_data: UserRegistration,

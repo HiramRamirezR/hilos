@@ -62,6 +62,7 @@ async function loadThreadSequence() {
 
         let autoPlayInterval; // Variable para el intervalo de reproducción automática
         const autoPlayDelay = 8000; // 8 segundos por paso
+        let isAutoPlaying = false; // Controla si la reproducción automática está activa
 
         const playBtn = document.getElementById('play-btn');
         const pauseBtn = document.getElementById('pause-btn');
@@ -98,7 +99,7 @@ async function loadThreadSequence() {
         }
 
         function speakCurrentStep() {
-            if ('speechSynthesis' in window) {
+            if (isAutoPlaying && 'speechSynthesis' in window) {
                 const { quarter, localIndex } = getQuarterAndLocalIndex(threadSequence[currentIndex]);
                 const colorName = getQuarterColorName(quarter);
                 const utterance = new SpeechSynthesisUtterance(`Paso ${currentIndex + 1}. Color ${colorName}, pin ${localIndex}.`);
@@ -162,6 +163,7 @@ async function loadThreadSequence() {
 
         function startAutoPlay() {
             if (autoPlayInterval) return; // Evitar múltiples intervalos
+            isAutoPlaying = true;
             playBtn.style.display = 'none';
             pauseBtn.style.display = 'block';
             autoPlayInterval = setInterval(() => {
@@ -172,6 +174,7 @@ async function loadThreadSequence() {
         function stopAutoPlay() {
             clearInterval(autoPlayInterval);
             autoPlayInterval = null;
+            isAutoPlaying = false;
             playBtn.style.display = 'block';
             pauseBtn.style.display = 'none';
             if ('speechSynthesis' in window) {

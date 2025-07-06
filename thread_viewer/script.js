@@ -60,13 +60,52 @@ async function loadThreadSequence() {
         const quartersCount = 4;
         const pinsPerQuarter = totalPins / quartersCount; // Esto será 45
 
-        function getQuarterAndLocalIndex(globalIndex) {
-            if (globalIndex === 0) return { quarter: 0, localIndex: 0 };
+        let autoPlayInterval; // Variable para el intervalo de reproducción automática
+        const autoPlayDelay = 8000; // 8 segundos por paso
 
-            const quarter = Math.floor((globalIndex - 1) / pinsPerQuarter) + 1;
-            const localIndex = ((globalIndex - 1) % pinsPerQuarter) + 1;
+        const playBtn = document.getElementById('play-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+
+        function getQuarterAndLocalIndex(globalIndex) {
+            // Convertir el índice global (0-indexado) a un número de pin (1-indexado)
+            const oneIndexedGlobalPin = globalIndex + 1;
+
+            // Calcular el cuarto (1-indexado)
+            const quarter = Math.ceil(oneIndexedGlobalPin / pinsPerQuarter);
+
+            // Calcular el índice local dentro del cuarto (1-indexado)
+            let localIndex = oneIndexedGlobalPin % pinsPerQuarter;
+            if (localIndex === 0) {
+                localIndex = pinsPerQuarter; // Si es el último pin del cuarto, el índice local es pinsPerQuarter
+            }
 
             return { quarter, localIndex };
+        }
+
+        function getQuarterColorName(quarter) {
+            switch (quarter) {
+                case 1:
+                    return 'amarillo';
+                case 2:
+                    return 'verde';
+                case 3:
+                    return 'azul';
+                case 4:
+                    return 'rojo';
+                default:
+                    return '';
+            }
+        }
+
+        function speakCurrentStep() {
+            if ('speechSynthesis' in window) {
+                const { quarter, localIndex } = getQuarterAndLocalIndex(threadSequence[currentIndex]);
+                const colorName = getQuarterColorName(quarter);
+                const utterance = new SpeechSynthesisUtterance(`Paso ${currentIndex + 1}. Color ${colorName}, pin ${localIndex}.`);
+                utterance.lang = 'es-ES'; // Establecer el idioma a español
+                speechSynthesis.cancel(); // Detener cualquier habla anterior
+                speechSynthesis.speak(utterance);
+            }
         }
 
         function saveProgress() {
@@ -85,7 +124,7 @@ async function loadThreadSequence() {
             const { quarter, localIndex } = getQuarterAndLocalIndex(threadSequence[currentIndex]);
 
             // Actualizar contador de progreso
-            progressCounter.textContent = `Paso ${currentIndex} de ${threadSequence.length - 1}`;
+            progressCounter.textContent = `Paso ${currentIndex + 1} de ${threadSequence.length}`;
 
             // Validar que el cuarto exista antes de intentar activarlo
             if (quarter > 0 && quarter <= 4) {
@@ -102,12 +141,15 @@ async function loadThreadSequence() {
                 }
             }
             saveProgress(); // Guardar el progreso cada vez que se renderiza la secuencia
+            speakCurrentStep(); // Leer el paso actual
         }
 
         function nextNumber() {
             if (currentIndex < threadSequence.length - 1) {
                 currentIndex++;
                 renderSequence();
+            } else {
+                stopAutoPlay(); // Detener la reproducción automática al llegar al final
             }
         }
 
@@ -118,14 +160,47 @@ async function loadThreadSequence() {
             }
         }
 
+        function startAutoPlay() {
+            if (autoPlayInterval) return; // Evitar múltiples intervalos
+            playBtn.style.display = 'none';
+            pauseBtn.style.display = 'block';
+            autoPlayInterval = setInterval(() => {
+                nextNumber();
+            }, autoPlayDelay);
+        }
+
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
+            playBtn.style.display = 'block';
+            pauseBtn.style.display = 'none';
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel(); // Detener el habla al pausar
+            }
+        }
+
         // Add event listeners to navigation buttons
-        document.getElementById('next-btn').addEventListener('click', nextNumber);
-        document.getElementById('prev-btn').addEventListener('click', previousNumber);
+        document.getElementById('next-btn').addEventListener('click', () => {
+            stopAutoPlay();
+            nextNumber();
+        });
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            stopAutoPlay();
+            previousNumber();
+        });
+        playBtn.addEventListener('click', startAutoPlay);
+        pauseBtn.addEventListener('click', stopAutoPlay);
 
         // Add keyboard navigation
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowRight') nextNumber();
-            if (event.key === 'ArrowLeft') previousNumber();
+            if (event.key === 'ArrowRight') {
+                stopAutoPlay();
+                nextNumber();
+            }
+            if (event.key === 'ArrowLeft') {
+                stopAutoPlay();
+                previousNumber();
+            }
         });
 
         // Initial render
@@ -133,10 +208,6 @@ async function loadThreadSequence() {
 
     } catch (error) {
         console.error('Error:', error);
-        const errorContainer = document.createElement('div');
-        errorContainer.textContent = 'No se pudo cargar la secuencia de hilos. Inténtalo de nuevo.';
-        errorContainer.style.color = 'red';
-        document.querySelector('.thread-viewer-container').prepend(errorContainer);
     }
 }
 

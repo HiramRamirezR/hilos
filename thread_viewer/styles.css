@@ -289,3 +289,19 @@ body {
 .nav-btn-next .btn-icon {
     margin-left: 10px;
 }
+
+.nav-btn-play {
+    background-color: var(--success-color);
+}
+
+.nav-btn-play:hover {
+    background-color: #3cb0a7;
+}
+
+.nav-btn-pause {
+    background-color: #6c757d;
+}
+
+.nav-btn-pause:hover {
+    background-color: #5a6268;
+}

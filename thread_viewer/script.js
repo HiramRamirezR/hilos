@@ -18,6 +18,21 @@ async function loadUserName() {
     }
 }
 
+async function loadThreadImage() {
+    try {
+        const pathParts = window.location.pathname.split('/');
+        const uniqueLink = pathParts[pathParts.length - 1];
+
+        const imgElement = document.getElementById('thread-image-preview');
+        if (imgElement) {
+            imgElement.src = `/api/thread-image/${uniqueLink}`;
+            imgElement.style.display = 'block'; // Mostrar la imagen una vez cargada
+        }
+    } catch (error) {
+        console.error('Error cargando imagen de hilos:', error);
+    }
+}
+
 async function loadThreadSequence() {
     try {
         // Obtener el unique_link de la URL
@@ -128,5 +143,6 @@ async function loadThreadSequence() {
 // Call the functions when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     loadUserName();
+    loadThreadImage();
     loadThreadSequence();
 });

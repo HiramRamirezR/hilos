@@ -401,6 +401,26 @@ async def get_user_data(unique_link: str, db: Session = Depends(get_db)):
         logger.error(f"Error obteniendo datos del usuario: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get('/api/thread-image/{unique_link}')
+async def get_thread_image(unique_link: str, db: Session = Depends(get_db)):
+    """Obtener la imagen de hilos para un enlace único"""
+    try:
+        purchase = db.query(Purchase).filter(Purchase.unique_link == unique_link).first()
+        if not purchase:
+            raise HTTPException(status_code=404, detail="Enlace no válido o expirado")
+
+        if not os.path.exists(purchase.image_path):
+            logger.error(f"Imagen no encontrada: {purchase.image_path}")
+            raise HTTPException(status_code=404, detail="Imagen no encontrada")
+
+        return FileResponse(purchase.image_path, media_type="image/png")
+
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error(f"Error obteniendo imagen de hilos: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post('/register-user')
 async def register_user(
     user_data: UserRegistration,

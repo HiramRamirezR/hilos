@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewImg = document.getElementById('preview');
     const resultImg = document.getElementById('result');
     const loadingDiv = document.getElementById('loading');
-    const errorDiv = document.getElementById('error');
     const generateBtn = document.getElementById('generateBtn');
 
     // Variables globales para el proceso de compra
@@ -87,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        errorDiv.textContent = '';
+        // errorDiv.textContent = '';
         resultImg.style.display = 'none';
         loadingDiv.style.display = 'block';
         generateBtn.disabled = true;
@@ -136,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             // Detener simulación en caso de error
             clearInterval(progressInterval);
-            errorDiv.textContent = error.message;
+            console.error(error.message);
             updateProgress(0, '😔 Ups, algo salió mal...');
         } finally {
             loadingDiv.style.display = 'none';

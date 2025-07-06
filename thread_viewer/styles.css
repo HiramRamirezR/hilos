@@ -305,3 +305,29 @@ body {
 .nav-btn-pause:hover {
     background-color: #5a6268;
 }
+
+/* Responsive adjustments for navigation buttons */
+@media (max-width: 768px) {
+    .nav-btn {
+        width: 50px; /* Fixed width for circular button */
+        height: 50px; /* Fixed height for circular button */
+        padding: 0; /* Remove padding */
+        border-radius: 50%; /* Make it circular */
+        flex-shrink: 0; /* Prevent shrinking */
+        justify-content: center; /* Center icon */
+        align-items: center; /* Center icon */
+    }
+
+    .nav-btn .button-label {
+        display: none; /* Hide text */
+    }
+
+    .btn-icon {
+        margin: 0 !important; /* Remove margins from icon */
+        font-size: 1.5rem; /* Adjust icon size for better visibility */
+    }
+
+    .navigation {
+        gap: 10px; /* Reduce gap between buttons */
+    }
+}

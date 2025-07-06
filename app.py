@@ -6,7 +6,6 @@ import stripe
 import logging
 import uvicorn
 import smtplib
-import gc
 from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -20,10 +19,6 @@ from dotenv import load_dotenv
 
 # Cargar variables de entorno
 load_dotenv()
-
-# Aplicar optimizaciones de memoria
-from config import apply_memory_optimizations, cleanup_temp_files, PROCESSING_CONFIG
-apply_memory_optimizations()
 
 # Configuración de logging
 logging.basicConfig(
@@ -106,12 +101,6 @@ async def generate_thread_image_endpoint(
 
         # Obtener el nombre del archivo de salida
         output_filename = os.path.basename(output_image_path)
-
-        # Liberar memoria después del procesamiento
-        gc.collect()
-
-        # Limpiar archivos temporales antiguos
-        cleanup_temp_files(OUTPUT_DIR)
 
         # Retornar la imagen generada
         return FileResponse(

@@ -20,6 +20,8 @@ from dotenv import load_dotenv
 # Cargar variables de entorno
 load_dotenv()
 
+base_url = os.getenv('BASE_URL', 'http://localhost:8000')
+
 # Configuración de logging
 logging.basicConfig(
     level=logging.DEBUG,
@@ -143,7 +145,6 @@ def send_confirmation_email(email: str, viewer_url: str):
         message["To"] = email
 
         # Construir URL completa
-        base_url = os.getenv('BASE_URL', 'http://localhost:8000')
         full_viewer_url = f"{base_url}{viewer_url}"
 
         html = f"""
@@ -192,8 +193,8 @@ async def create_checkout_session(request: CheckoutRequest):
                 'quantity': 1,
             }],
             mode='payment',
-            success_url='http://localhost:8000/success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url='http://localhost:8000/',
+            success_url=f'{base_url}/success?session_id={{CHECKOUT_SESSION_ID}}',
+            cancel_url=f'{base_url}/',
             metadata={
                 'filename': request.imageData.filename,
                 'original_file': request.imageData.originalFile or ''

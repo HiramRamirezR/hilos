@@ -430,4 +430,14 @@ async def register_user(
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Obtener el puerto de las variables de entorno, con un valor por defecto
+    port = int(os.getenv("PORT", 8000))
+    
+    # Configurar y ejecutar Uvicorn
+    uvicorn.run(
+        "app:app",
+        host="0.0.0.0",
+        port=port,
+        reload=True,
+        reload_excludes=["thread_outputs/*", ".vscode/*", "__pycache__/*"]
+    )

@@ -128,6 +128,7 @@ class CheckoutRequest(BaseModel):
     imageData: ImageData
 
 def send_confirmation_email(email: str, viewer_url: str):
+    logger.debug(f"Iniciando envío de correo a: {email}")
     try:
         # Configuración desde variables de entorno
         smtp_server = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
@@ -138,6 +139,8 @@ def send_confirmation_email(email: str, viewer_url: str):
         if not sender_email or not password:
             logger.error("Credenciales de email no configuradas en variables de entorno")
             return
+
+        logger.debug(f"Configuración de SMTP: Host={smtp_server}, Puerto={port}, Remitente={sender_email}")
 
         message = MIMEMultipart("alternative")
         message["Subject"] = "¡Tu imagen de hilos está lista!"
@@ -165,14 +168,20 @@ def send_confirmation_email(email: str, viewer_url: str):
         html_part = MIMEText(html, "html")
         message.attach(html_part)
 
+        logger.debug("Creando contexto SSL.")
         context = ssl.create_default_context()
+        logger.debug(f"Conectando a SMTP server: {smtp_server}:{port}")
         with smtplib.SMTP(smtp_server, port) as server:
+            logger.debug("Iniciando TLS.")
             server.starttls(context=context)
+            logger.debug("Iniciando sesión en el servidor SMTP.")
             server.login(sender_email, password)
+            logger.debug(f"Enviando correo desde {sender_email} a {email}.")
             server.sendmail(sender_email, email, message.as_string())
+            logger.info(f"Correo enviado exitosamente a: {email}")
 
     except Exception as e:
-        logger.error(f"Error enviando correo: {str(e)}")
+        logger.error(f"Error enviando correo: {str(e)}", exc_info=True)
         pass
 
 @app.post('/create-checkout-session')

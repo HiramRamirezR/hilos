@@ -128,23 +128,21 @@ class CheckoutRequest(BaseModel):
     imageData: ImageData
 
 def send_confirmation_email(email: str, viewer_url: str):
-    logger.debug(f"Iniciando envío de correo a: {email}")
     try:
         # Configuración desde variables de entorno
         smtp_server = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
         port = int(os.getenv('EMAIL_PORT', '587'))
-        sender_email = os.getenv('EMAIL_USERNAME')
-        password = os.getenv('EMAIL_PASSWORD')
+        smtp_username = os.getenv('EMAIL_USERNAME')
+        smtp_password = os.getenv('EMAIL_PASSWORD')
+        from_email_address = os.getenv('FROM_EMAIL_ADDRESS')
 
-        if not sender_email or not password:
-            logger.error("Credenciales de email no configuradas en variables de entorno")
+        if not smtp_username or not smtp_password or not from_email_address:
+            logger.error("Credenciales de email o dirección de remitente no configuradas en variables de entorno")
             return
-
-        logger.debug(f"Configuración de SMTP: Host={smtp_server}, Puerto={port}, Remitente={sender_email}")
 
         message = MIMEMultipart("alternative")
         message["Subject"] = "¡Tu imagen de hilos está lista!"
-        message["From"] = sender_email
+        message["From"] = from_email_address
         message["To"] = email
 
         # Construir URL completa
@@ -168,20 +166,14 @@ def send_confirmation_email(email: str, viewer_url: str):
         html_part = MIMEText(html, "html")
         message.attach(html_part)
 
-        logger.debug("Creando contexto SSL.")
         context = ssl.create_default_context()
-        logger.debug(f"Conectando a SMTP server: {smtp_server}:{port}")
         with smtplib.SMTP(smtp_server, port) as server:
-            logger.debug("Iniciando TLS.")
             server.starttls(context=context)
-            logger.debug("Iniciando sesión en el servidor SMTP.")
-            server.login(sender_email, password)
-            logger.debug(f"Enviando correo desde {sender_email} a {email}.")
-            server.sendmail(sender_email, email, message.as_string())
-            logger.info(f"Correo enviado exitosamente a: {email}")
+            server.login(smtp_username, smtp_password)
+            server.sendmail(from_email_address, email, message.as_string())
 
     except Exception as e:
-        logger.error(f"Error enviando correo: {str(e)}", exc_info=True)
+        logger.error(f"Error enviando correo: {str(e)}")
         pass
 
 @app.post('/create-checkout-session')

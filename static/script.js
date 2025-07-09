@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para simular progreso estimado (15-17 segundos)
     function simulateProgress() {
-        const totalTime = 16000; // 16 segundos promedio
+        const totalTime = 35000; // 35 segundos promedio
         const updateInterval = 100; // Actualizar cada 100ms
         const totalUpdates = totalTime / updateInterval;
         let currentUpdate = 0;
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { end: 0.6, status: '🧵 Tejiendo los primeros hilos...' },
             { end: 0.8, status: '🎭 Agregando toques de magia...' },
             { end: 0.95, status: '✨ Dando los últimos retoques...' },
-            { end: 1.0, status: '🎉 ¡Tu arte está listo!' }
+            { end: 1.0, status: '🎉 ¡Tu imagen está casi lista!' }
         ];
 
         const progressInterval = setInterval(() => {

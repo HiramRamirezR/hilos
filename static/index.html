@@ -13,10 +13,29 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-magic"></i> Hilos</h1>
-            <p>Transforma tus imágenes en arte de hilos mágicos</p>
+            <p>Transforma tus imágenes en arte con hilos</p>
         </header>
 
         <main>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/FyxkngHbpVs" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+
+            <div class="instructions">
+                <h3>Instrucciones para genera tu imagen de hilos</h3>
+                <p>Para obtener el mejor resultado, por favor sigue estas recomendaciones:</p>
+                <ul>
+                    <li>Selecciona una foto <strong>cuadrada</strong>.</li>
+                    <li>Si es un retrato, el rostro debe estar <strong>bien enfocado</strong> y ocupar la mayor parte de
+                        la imagen.</li>
+                    <li>Puedes probar con varias fotos hasta que encuentres una que te guste.</li>
+                    <li>Una vez que estés satisfecho con la vista previa, puedes proceder a generar la imagen y
+                        hacer tu pedido.</li>
+                </ul>
+            </div>
+
             <form>
                 <div class="image-upload-container">
                     <input type="file" id="imageInput" accept="image/*" required class="file-input">
@@ -26,7 +45,7 @@
                     </label>
 
                     <div class="preview-container">
-                        <img id="preview" alt="Vista previa" class="preview-image">
+                        <img id="preview" class="preview-image">
                     </div>
                 </div>
 
@@ -52,7 +71,7 @@
             </div>
 
             <div class="result-container">
-                <img id="result" alt="Imagen generada" class="result-image">
+                <img id="result" class="result-image">
                 <!-- Agregamos el botón de compra -->
                 <button id="buyButton" class="buy-btn" style="display: none;">
                     <i class="fas fa-shopping-cart"></i> Comprar esta imagen
@@ -62,10 +81,22 @@
             <!-- Mensaje informativo sobre el proceso de compra -->
             <div id="purchaseInfo" class="purchase-info" style="display: none;">
                 <div class="info-box">
-                    <h3>🛒 Proceso de Compra</h3>
+                    <h3>🛒 Proceso de Compra y Envío</h3>
                     <p>Al hacer clic en "Comprar", serás redirigido a una página segura de Stripe para completar tu
                         pago.</p>
-                    <p>Después del pago exitoso, podrás registrar tu información de envío.</p>
+                    <p>Una vez completado el pago, se te solicitarán tus datos de envío. Recibirás tu paquete en un
+                        plazo de <strong>2 a 4 días hábiles</strong>.</p>
+                    <hr>
+                    <h4>Tu App Personalizada</h4>
+                    <p>Al confirmar tu compra, recibirás un correo electrónico con una liga personalizada a una
+                        aplicación web. En esta app, podrás seguir los pasos para crear tu propia imagen de hilos
+                        digital.</p>
+                    <div class="gif-placeholder">
+                        <img src="https://via.placeholder.com/400x300.gif?text=Demostraci%C3%B3n+de+la+App"
+                            alt="Animación de la aplicación de hilos">
+                    </div>
+                    <p>Con esta herramienta, podrás crear tu imagen de hilos usando tu kit y una computadora o celular.
+                    </p>
                 </div>
             </div>
         </main>
